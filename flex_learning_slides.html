@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display:Flex 学習スライド</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .slide-container {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .slide-container.active {
+            display: block;
+        }
+
+        .slide {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            color: #4a5568;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            color: #4a5568;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .demo-container {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .flex-parent {
+            background: #667eea;
+            border: 3px dashed #4a5568;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .flex-parent::before {
+            content: "親要素 (flexコンテナ)";
+            position: absolute;
+            top: -15px;
+            left: 15px;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .flex-child {
+            background: #fed6e3;
+            color: #4a5568;
+            padding: 15px 20px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 2px solid #f093fb;
+            font-weight: bold;
+            min-width: 100px;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: left;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .css-property {
+            color: #4fd1c7;
+        }
+
+        .css-value {
+            color: #f6ad55;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .nav-button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .interactive-demo {
+            margin: 30px 0;
+        }
+
+        .demo-controls {
+            margin: 20px 0;
+        }
+
+        .control-button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .control-button:hover {
+            background: #38a169;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .example-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide-container active">
+        <div class="slide">
+            <h1>🎯 Display: Flex をマスターしよう！</h1>
+            <div class="highlight">
+                <h3>HTMLとCSSレイアウトの基礎</h3>
+                <p>親要素と子要素の関係を理解して、柔軟なレイアウトを作成しよう</p>
+            </div>
+            <div style="font-size: 5em; margin: 40px 0;">📦➡️📦📦📦</div>
+            <p style="text-align: center; font-size: 1.5em; color: #667eea; font-weight: bold;">
+                親要素が子要素を整理整頓！
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 2: What is Flexbox -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>🤔 Flexboxとは何か？</h2>
+            <div class="highlight">
+                <h3>Flexible Box Layout（柔軟なボックスレイアウト）</h3>
+                <p><strong>Flexbox</strong>は、要素を一列に並べたり、空間を効率的に配分したりするためのCSS レイアウト手法です。</p>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>❌ 従来の方法</h3>
+                    <p>• float を使用<br>
+                    • position で調整<br>
+                    • 複雑で難しい<br>
+                    • レスポンシブが困難</p>
+                </div>
+                <div class="example-card">
+                    <h3>✅ Flexbox</h3>
+                    <p>• display: flex; だけ<br>
+                    • 自動的に配置<br>
+                    • シンプルで直感的<br>
+                    • レスポンシブ対応</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <p style="text-align: center;"><strong>🎯 目標：親要素と子要素の関係を完全理解！</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Parent and Child Relationship -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>👨‍👩‍👧‍👦 親要素と子要素の関係</h2>
+            
+            <div class="demo-container">
+                <h3>基本的な仕組み</h3>
+                <div class="flex-parent" style="display: flex;">
+                    <div class="flex-child">子要素1</div>
+                    <div class="flex-child">子要素2</div>
+                    <div class="flex-child">子要素3</div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>📝 重要なポイント</h3>
+                <p><strong>親要素（Flexコンテナ）</strong>：<code style="background: #667eea; color: white; padding: 3px 8px; border-radius: 4px;">display: flex;</code> を指定</p>
+                <p><strong>子要素（Flexアイテム）</strong>：親要素の直接の子要素が自動的にFlexアイテムになる</p>
+            </div>
+
+            <div style="font-size: 2em; margin: 30px 0;">
+                🏠 親 → 📦📦📦 子たち
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Basic Structure -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>🏗️ 基本構造とコード</h2>
+            
+            <div class="example-grid">
+                <div>
+                    <h3>HTML構造</h3>
+                    <div class="code-block">
+&lt;div class="<span class="css-value">parent</span>"&gt;
+  &lt;div class="<span class="css-value">child</span>"&gt;子要素1&lt;/div&gt;
+  &lt;div class="<span class="css-value">child</span>"&gt;子要素2&lt;/div&gt;
+  &lt;div class="<span class="css-value">child</span>"&gt;子要素3&lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>CSS設定</h3>
+                    <div class="code-block">
+.<span class="css-value">parent</span> {
+  <span class="css-property">display</span>: <span class="css-value">flex</span>;
+  <span class="css-property">background</span>: <span class="css-value">#e2e8f0</span>;
+  <span class="css-property">padding</span>: <span class="css-value">20px</span>;
+}
+
+.<span class="css-value">child</span> {
+  <span class="css-property">background</span>: <span class="css-value">#fed6e3</span>;
+  <span class="css-property">padding</span>: <span class="css-value">15px</span>;
+  <span class="css-property">margin</span>: <span class="css-value">5px</span>;
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <p><strong>🔑 キーポイント：</strong> 親要素に <code style="background: #667eea; color: white; padding: 3px 8px; border-radius: 4px;">display: flex;</code> を指定するだけで、子要素が自動的に横並びになります！</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Interactive Demo -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>🎮 インタラクティブデモ</h2>
+            
+            <div class="demo-container">
+                <div class="demo-controls">
+                    <button class="control-button" onclick="changeJustifyContent('flex-start')">左寄せ</button>
+                    <button class="control-button" onclick="changeJustifyContent('center')">中央</button>
+                    <button class="control-button" onclick="changeJustifyContent('flex-end')">右寄せ</button>
+                    <button class="control-button" onclick="changeJustifyContent('space-between')">両端揃え</button>
+                    <button class="control-button" onclick="changeJustifyContent('space-around')">均等配置</button>
+                </div>
+                
+                <div class="flex-parent" id="demoContainer" style="display: flex; justify-content: flex-start;">
+                    <div class="flex-child">アイテム1</div>
+                    <div class="flex-child">アイテム2</div>
+                    <div class="flex-child">アイテム3</div>
+                </div>
+                
+                <div class="code-block" id="currentCode">
+justify-content: flex-start;
+                </div>
+            </div>
+
+            <div class="highlight">
+                <p><strong>試してみよう！</strong> ボタンをクリックして、子要素の配置がどう変わるか確認してください。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Main Properties -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>⚙️ 主要なプロパティ</h2>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>justify-content</h3>
+                    <p><strong>横方向の配置</strong></p>
+                    <div class="code-block" style="font-size: 0.9em;">
+<span class="css-property">justify-content</span>:
+• <span class="css-value">flex-start</span> (左寄せ)
+• <span class="css-value">center</span> (中央)
+• <span class="css-value">flex-end</span> (右寄せ)
+• <span class="css-value">space-between</span> (両端揃え)
+• <span class="css-value">space-around</span> (均等配置)
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <h3>align-items</h3>
+                    <p><strong>縦方向の配置</strong></p>
+                    <div class="code-block" style="font-size: 0.9em;">
+<span class="css-property">align-items</span>:
+• <span class="css-value">flex-start</span> (上寄せ)
+• <span class="css-value">center</span> (中央)
+• <span class="css-value">flex-end</span> (下寄せ)
+• <span class="css-value">stretch</span> (伸ばす)
+• <span class="css-value">baseline</span> (ベースライン)
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3>flex-direction</h3>
+                <p><strong>並ぶ方向</strong></p>
+                <div class="code-block" style="font-size: 0.9em;">
+<span class="css-property">flex-direction</span>: <span class="css-value">row</span> (横並び - デフォルト)
+<span class="css-property">flex-direction</span>: <span class="css-value">column</span> (縦並び)
+<span class="css-property">flex-direction</span>: <span class="css-value">row-reverse</span> (横並び逆順)
+<span class="css-property">flex-direction</span>: <span class="css-value">column-reverse</span> (縦並び逆順)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Practical Examples -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>🚀 実践的な使用例</h2>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>🧭 ナビゲーションメニュー</h3>
+                    <div class="demo-container">
+                        <div style="display: flex; justify-content: space-around; background: #4a5568; padding: 15px; border-radius: 8px;">
+                            <div style="color: white; font-weight: bold;">ホーム</div>
+                            <div style="color: white; font-weight: bold;">概要</div>
+                            <div style="color: white; font-weight: bold;">サービス</div>
+                            <div style="color: white; font-weight: bold;">お問合せ</div>
+                        </div>
+                    </div>
+                    <div class="code-block" style="font-size: 0.8em;">
+display: flex;
+justify-content: space-around;
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🎯 完全センタリング</h3>
+                    <div class="demo-container">
+                        <div style="display: flex; justify-content: center; align-items: center; height: 100px; background: #e2e8f0; border-radius: 8px;">
+                            <div style="background: #667eea; color: white; padding: 20px; border-radius: 8px; font-weight: bold;">中央配置！</div>
+                        </div>
+                    </div>
+                    <div class="code-block" style="font-size: 0.8em;">
+display: flex;
+justify-content: center;
+align-items: center;
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>💡 よく使われる場面</h3>
+                <p>• ヘッダー/ナビゲーション • カードレイアウト • ボタン配置 • レスポンシブデザイン</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Summary -->
+    <div class="slide-container">
+        <div class="slide">
+            <h2>📚 まとめ</h2>
+            
+            <div class="highlight">
+                <h3>🎯 今日学んだこと</h3>
+                <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <p><strong>1. Flexboxの基本概念</strong><br>
+                    親要素（Flexコンテナ）と子要素（Flexアイテム）の関係</p>
+                    
+                    <p><strong>2. 基本設定</strong><br>
+                    親要素に <code style="background: #667eea; color: white; padding: 3px 8px; border-radius: 4px;">display: flex;</code> を指定するだけ！</p>
+                    
+                    <p><strong>3. 主要プロパティ</strong><br>
+                    • justify-content（横配置）<br>
+                    • align-items（縦配置）<br>
+                    • flex-direction（方向）</p>
+                    
+                    <p><strong>4. 実践例</strong><br>
+                    ナビゲーション、センタリング、カードレイアウト</p>
+                </div>
+            </div>
+
+            <div style="font-size: 3em; margin: 40px 0;">🎉</div>
+            
+            <div class="highlight">
+                <p style="text-align: center; font-size: 1.4em; color: #667eea; font-weight: bold;">
+                    お疲れ様でした！<br>
+                    さあ、実際にFlexboxを使ってみましょう！
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter" id="slideCounter">1 / 8</div>
+    
+    <div class="navigation">
+        <button class="nav-button" id="prevButton" onclick="previousSlide()">← 前へ</button>
+        <button class="nav-button" id="nextButton" onclick="nextSlide()">次へ →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.slide-container').length;
+
+        function updateSlide() {
+            // Hide all slides
+            document.querySelectorAll('.slide-container').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show current slide
+            document.querySelectorAll('.slide-container')[currentSlide].classList.add('active');
+            
+            // Update counter
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            // Update navigation buttons
+            document.getElementById('prevButton').disabled = currentSlide === 0;
+            document.getElementById('nextButton').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function changeJustifyContent(value) {
+            const container = document.getElementById('demoContainer');
+            const code = document.getElementById('currentCode');
+            container.style.justifyContent = value;
+            code.textContent = `justify-content: ${value};`;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
